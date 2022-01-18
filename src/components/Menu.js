@@ -11,7 +11,7 @@ export default function Menu(props) {
                 </div>
                 <div className="menu-detail">
                     <h3 className="font-semibold uppercase">{props.title}</h3>
-                    <p className="">{props.publisher}</p>
+                    <p className="mt-1">{props.publisher}</p>
                 </div>
             </div>
     )

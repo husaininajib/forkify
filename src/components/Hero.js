@@ -1,5 +1,4 @@
 import React from "react";
-// import heroImage from "./"
 
 export default function Hero(props) {
     return (
@@ -7,20 +6,24 @@ export default function Hero(props) {
             <div className="img-container">
                 <img src={props.menuImage} alt="" />
                 <h1 className="recipe-title">
-                    <span className="text-white uppercase">pizza dinner</span>    
+                    <span className="text-white uppercase">{props.title}</span>    
                 </h1>
             </div>
 
             <article className="flex justify-between items-center  px-4 pb-6 pt-14">
                 <div className="left-side flex gap-4">
-                    <div className="minutes-container flex gap-2 items-center">
-                        <i className="far fa-clock"></i>
-                        <span>60 MINUTES</span>
+                    <div className="minutes-container flex items-center">
+                        <i className="far fa-clock mr-2"></i>
+                        <p>
+                            <span className="font-bold">60 </span> MINUTES
+                        </p>
                     </div>
-                    <div className="flex gap-2 items-center">
-                        <i className="fas fa-users"></i>
-                        <span>1 SERVINGS</span>
-                        <div className="add-minus-container flex gap-2">
+                    <div className="flex items-center">
+                        <i className="fas fa-users mr-2"></i>
+                        <p>
+                            <span className="font-bold">1 </span> SERVINGS
+                        </p>
+                        <div className="add-minus-container flex gap-2 ml-2">
                             <i className="fas fa-plus-circle"></i>
                             <i className="fas fa-minus-circle"></i>
                         </div>

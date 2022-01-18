@@ -6,16 +6,18 @@ import RecipeList from './components/RecipeList';
 import Cook from './components/Cook';
 import Footer from './components/Footer';
 import Menu from './components/Menu';
+import { nanoid } from 'nanoid'
 
 function App() {
   const [toggle, setToggle] = useState(false)
-  const [menus, setMenus] = useState([])
+  const [menus, setMenus] = useState([]) //1st
   const [recipeId, setRecipe] = useState(35626)
-  const [selectedRecipe, setSelectedRecipe] = useState({})
+  const [selectedRecipe, setSelectedRecipe] = useState({}) //2nd
   const [menuClicked, setMenuClicked] = useState(false)
 
   function toggleMenu() {
     setToggle(prev => !prev)
+    setMenuClicked(false)
   }
 
   function getRecipe(id) {
@@ -25,6 +27,7 @@ function App() {
       }
     })
     setMenuClicked(prev => !prev)
+    setToggle(false)
   }
 
   useEffect(() => {
@@ -39,13 +42,10 @@ function App() {
       const recipeUrl = await fetch(`https://forkify-api.herokuapp.com/api/get?rId=${recipeId}`)
       const recipeData = await recipeUrl.json()
       setSelectedRecipe(recipeData.recipe)
-      // console.log(recipeData.recipe.image_url)
-      console.log(selectedRecipe.image_url)
     }
     getSelectedrecipe()
 
   }, [recipeId])
-
 
   const menuElement = menus.map(menu => {
     return (
@@ -56,16 +56,16 @@ function App() {
         imageUrl={menu.image_url}
         publisher={menu.publisher}
         getRecipe={() => getRecipe(menu.recipe_id)}
-        isMenuClicked={menuClicked}
       />
     )
   })
 
-  // console.log(selectedRecipe.recipe.image_url)
   // ==================================================
   return (
     <div>
-      <article className={`menu-list ${toggle ? "show-menu" : "remove-menu"} ${menuClicked ? "remove-menu" : "show-menu"}`}>
+      <article 
+        className={`menu-list ${toggle ? "show-menu" : "remove-menu"} ${menuClicked? "remove-menu" : "show-menu"}`}
+      >
         {menuElement}
       </article>
       <Navbar 
@@ -74,10 +74,11 @@ function App() {
       <main>
         <Hero 
           menuImage={selectedRecipe.image_url}
+          title={selectedRecipe.title}
         />
         <RecipeList
-          recipeId={recipeId}
-          // recipeIngredients={selectedRecipe.recipe.ingredients}
+          recipeId={selectedRecipe.recipe_id}
+          recipeIngredients={selectedRecipe.ingredients}
         />
         <Cook />
       </main>
