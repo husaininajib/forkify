@@ -2,9 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
-header {
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&family=Nunito+Sans:ital,wght@0,200;0,300;0,600;0,700;1,300;1,400&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    font-family: 'Nunito Sans', sans-serif;
+    color: #615551;
+}
+
+header,
+.hero article,
+#cook {
     background-color: #F9F5F3;
 }
-nav i {
+nav i,
+.hero i {
     color: #f38e82;
 }
+#recipe {
+    background-color: #F2EFEE
+}
+
+footer {
+    background-image: linear-gradient(to right bottom,#fbdb89,#f48982);
+}
+button {
+    background-image: linear-gradient(to right bottom,#fbdb89,#f48982);
+    padding: .6rem 1rem;
+    border-radius: 7px;
+}
+
+.img-container {
+    position: relative;
+}
+.recipe-title {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%,20%) skewY(
+-6deg
+);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    width: 50%;
+    line-height: 1.95;
+    text-align: center;
+}
+
+.recipe-title span {
+    box-decoration-break: clone;
+    padding: .8rem 2rem;
+    background-image: linear-gradient(to right bottom,#fbdb89,#f48982);
+}
+.img-container::before {
+    content: "";
+    background-image: linear-gradient(to right bottom,#fbdb89,#f48982);
+    opacity: .6;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.menu-list {
+    background-color: #ffffff;
+    position: fixed;
+    top: 3rem;
+    left: 0;
+    width: 60%;
+    bottom: 0;
+    z-index: 1;
+}
+
+
