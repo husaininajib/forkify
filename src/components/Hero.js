@@ -1,11 +1,11 @@
 import React from "react";
 // import heroImage from "./"
 
-export default function Hero() {
+export default function Hero(props) {
     return (
         <section className="hero">
             <div className="img-container">
-                <img src="./images/u1.png" alt="" />
+                <img src={props.menuImage} alt="" />
                 <h1 className="recipe-title">
                     <span className="text-white uppercase">pizza dinner</span>    
                 </h1>
@@ -18,7 +18,7 @@ export default function Hero() {
                         <span>60 MINUTES</span>
                     </div>
                     <div className="flex gap-2 items-center">
-                        <i class="fas fa-users"></i>
+                        <i className="fas fa-users"></i>
                         <span>1 SERVINGS</span>
                         <div className="add-minus-container flex gap-2">
                             <i className="fas fa-plus-circle"></i>

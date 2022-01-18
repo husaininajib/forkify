@@ -55,7 +55,7 @@ header {
     position: fixed;
     top: 3rem;
     left: 0;
-    width: 60%;
+    width: 100%;
     bottom: 0;
     z-index: 1;
     transform: translateX(-100%);
@@ -64,10 +64,18 @@ header {
 .show-menu {
     transform: translateX(0);
 }
+.remove-menu {
+    transform: translateX(-100%);
+}
 
 .menu-img {
     width: 3.5rem;
     height: 3.5rem;
+}
+.menu-img img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
 }
 .menu-detail p {
     font-size: .85rem;
