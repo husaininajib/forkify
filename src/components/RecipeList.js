@@ -3,19 +3,26 @@ import React from "react";
 export default function RecipeList() {
     return (
         <section id="recipe" className="grid place-items-center pb-10 px-4">
-            <h2 className="mt-8 mb-5">RECIPE INGREDIENTS</h2>
-            <ul className="grid grid-cols-2">
+            <h2 className="mt-8 mb-7 font-bold">RECIPE INGREDIENTS</h2>
+            <ul className="grid place-items-center gap-6">
                 <li>
-                    1 oz cream cheese room temperature
+                    <i className="fas fa-check"></i> 
+                    <span>1 1/2 cups warm water</span>
                 </li>
                 <li>
-                    1 oz cream cheese room temperature
+                    <i className="fas fa-check"></i> 
+                    <span>1 1/2 cups warm water</span>
                 </li>
                 <li>
-                    1 oz cream cheese room temperature
+                    <i className="fas fa-check"></i> 
+                    <span>1 1/2 cups warm water</span>
+                </li><li>
+                    <i className="fas fa-check"></i> 
+                    <span>1 1/2 cups warm water</span>
                 </li>
                 <li>
-                    1 oz cream cheese room temperature
+                    <i className="fas fa-check"></i> 
+                    <span>1 1/2 cups warm water</span>
                 </li>
             </ul>
         </section>

@@ -7,7 +7,7 @@ export default function Hero() {
             <div className="img-container">
                 <img src="./images/u1.png" alt="" />
                 <h1 className="recipe-title">
-                    <span className="text-white">PIZZA DINNER</span>    
+                    <span className="text-white uppercase">pizza dinner</span>    
                 </h1>
             </div>
 
