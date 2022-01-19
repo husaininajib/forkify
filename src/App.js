@@ -12,24 +12,23 @@ import { nanoid } from 'nanoid'
 function App() {
   const [displayMenuStatus, setDisplayMenuStatus] = useState(false)
   const [isMenuSelected, setIsMenuSelected] = useState(false)
-  const [isBookmarkDisplayed, setIsBookmarkDisplayed] = useState(false)
-  const [servingCount, setServingCount] = useState(1)
+  const [showBookmarkList, setShowBookmarkList] = useState(false)
   const [menus, setMenus] = useState(null) 
-  const [selectedRecipe, setSelectedRecipe] = useState(null)
-  // const [recipeId, setRecipeId] = useState(35626)
-  const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09") //refactor
+  const [currentMenu, setCurrentMenu] = useState(null)
+  const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09")
   const [bookmarkList, setBookmarkList] = useState([])
+  const [servingCount, setServingCount] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
 
 
   function toggleMenu() {
     setDisplayMenuStatus(prev => !prev)
     setIsMenuSelected(false)
-    setIsBookmarkDisplayed(false)
+    setShowBookmarkList(false)
   }
 
   function toggleBookmark() {
-    setIsBookmarkDisplayed(prev => !prev)
+    setShowBookmarkList(prev => !prev)
     setDisplayMenuStatus(false)
   }
 
@@ -47,7 +46,7 @@ function App() {
 
   function getRecipeId(id) { // to fetch the recipe url
     menus.forEach(menu => {
-      if (menu.recipe_id === id) {
+      if (menu.id === id) {
         setRecipeId(id)
       }
     })
@@ -55,44 +54,38 @@ function App() {
     setDisplayMenuStatus(false)
   }
 
+  // function bookmarkRecipe() {
+  //   const recipeInfo = currentMenu.recipeDetails
+  //   setBookmarkList(prev => {
+  //     return [...prev, {recipeInfo, isBookmarked: true}]
+  //   })
+  // }
+
   function bookmarkRecipe() {
+    // const recipeInfo = currentMenu.recipeDetails
+    // setBookmarkList(prev => {
+    //   return [...prev, {recipeInfo, isBookmarked: true}]
+    // })
     setBookmarkList(prev => {
-      return [...prev, {selectedRecipe, isBookmarked: true}]
+      return [...prev, {currentMenu, isSaved: !currentMenu.isSaved}]
     })
+
   }
-
-
-
+  
   useEffect(() => {
-    // async function getMenu() {
-    //   const menuUrl = await fetch("https://forkify-api.herokuapp.com/api/search?q=pizza")
-    //   const menuData = await menuUrl.json()
-    //   setMenus(menuData.recipes)
-    // }
-    // getMenu()
     fetch("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza")
-    .then(res => {
-      return res.json()
-    })
+    .then(res => res.json())
     .then(data => {
       const menuList=data.data.recipes
       setMenus(menuList)
     })
 
-    // async function getSelectedrecipe() {
-    //   const recipeUrl = await fetch(`https://forkify-api.herokuapp.com/api/get?rId=${recipeId}`)
-    //   const recipeData = await recipeUrl.json()
-    //   setSelectedRecipe(recipeData.recipe)
-    // }
-    // getSelectedrecipe()
-
     fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`)
-    .then(res => {
-      return res.json()
-    })
+    .then(res => res.json()
+)
     .then(data => {
       const recipeDetails = data.data.recipe
-      setSelectedRecipe({recipeDetails})
+      setCurrentMenu({recipeDetails, isSaved: false})
     }) 
 
   }, [recipeId])
@@ -117,18 +110,12 @@ function App() {
     const menuElement = menus.map(menu => {
       return (
         <Menu 
-          // key={menu.recipe_id}
-          // recipe={menu.recipe_id}
-          // title={menu.title}
-          // imageUrl={menu.image_url}
-          // publisher={menu.publisher}
-          // getRecipe={() => getRecipeId(menu.recipe_id)}
           key={menu.id}
-          recipe={menu.id}
+          menuID={menu.id}
           title={menu.title}
           imageUrl={menu.image_url}
           publisher={menu.publisher}
-          getRecipe={() => getRecipeId(menu.recipe_id)}
+          getRecipe={() => getRecipeId(menu.id)}
         />
       )
     })
@@ -136,49 +123,48 @@ function App() {
   }
 
   function generateSelectedRecipe() {
-    const recipeInfo = selectedRecipe.recipeDetails
+    const menuInfo = currentMenu.recipeDetails
     return (
       <Hero 
-          // menuImage={selectedRecipe.image_url}
-          // title={selectedRecipe.title}
-          // serving={servingCount}
-          // addServing={addServing}
-          // reduceServing={reduceServing}
-          // saveRecipe={bookmarkRecipe}
-          // bookmarked={bookmarkList}
-          menuImage={recipeInfo.image_url}
-          title={recipeInfo.title}
-          serving={servingCount}
-          addServing={addServing}
-          reduceServing={reduceServing}
-          saveRecipe={bookmarkRecipe}
-          bookmarked={bookmarkList}
+        imageUrl={menuInfo.image_url}
+        title={menuInfo.title}
+        servingCount={servingCount}
+        addServingCount={addServing}
+        reduceServingCount={reduceServing}
+        saveRecipe={bookmarkRecipe}
+        bookmarkedList={bookmarkList}
       />
     )
   }
 
   function generateRecipeIngredients() {
-    const recipeInfo = selectedRecipe.recipeDetails
+    const menuInfo = currentMenu.recipeDetails
     return (
       <RecipeList
-          recipeId={recipeInfo.id}
-          recipeIngredients={recipeInfo.ingredients}
+          recipeId={menuInfo.id}
+          ingredientsList={menuInfo.ingredients}
       />
     )
   }
   
 
 
-  const bookmarkElement = bookmarkList.map(item => {
-    return (
-      <Dropdown 
-        key={nanoid()}
-        menuName={item.selectedRecipe.title}
-        menuImage={item.selectedRecipe.image_url}
-        menuPublisher={item.selectedRecipe.publisher}
-      />
-    )
-  })
+  // const bookmarkElement = bookmarkList.map(item => {
+  //   return (
+  //     // <Dropdown 
+  //     //   key={nanoid()}
+  //     //   menuName={item.currentMenu.title}
+  //     //   menuImage={item.currentMenu.image_url}
+  //     //   menuPublisher={item.currentMenu.publisher}
+  //     // />
+  //     <Dropdown 
+  //       key={nanoid()}
+  //       // menuName={item.currentMenu.title}
+  //       // menuImage={item.currentMenu.image_url}
+  //       // menuPublisher={item.currentMenu.publisher}
+  //     />
+  //   )
+  // })
   // ==================================================
   return (
     <div>
@@ -192,12 +178,16 @@ function App() {
         toggleBookmark={toggleBookmark}
       />
       <article className="dropdown">
-        {isBookmarkDisplayed && bookmarkElement}
+        {/* {showBookmarkList && bookmarkElement} */}
       </article>
       <main>
-        {selectedRecipe && generateSelectedRecipe()}
-        {selectedRecipe && generateRecipeIngredients()}
-        <Cook />
+        {currentMenu && generateSelectedRecipe()}
+        {currentMenu && generateRecipeIngredients()}
+        {
+          currentMenu &&
+          <Cook 
+          sourceUrl={currentMenu.recipeDetails.source_url}
+        />}
       </main>
       <Footer />
     </div>
