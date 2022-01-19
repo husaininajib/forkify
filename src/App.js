@@ -14,11 +14,13 @@ function App() {
   const [isMenuSelected, setIsMenuSelected] = useState(false)
   const [isBookmarkDisplayed, setIsBookmarkDisplayed] = useState(false)
   const [servingCount, setServingCount] = useState(1)
-  const [menus, setMenus] = useState([]) 
-  // const [recipeId, setRecipeId] = useState(35626)
-  const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09") //refactor
-  const [selectedRecipe, setSelectedRecipe] = useState(0)
+  const [menus, setMenus] = useState(null) 
+  const [selectedRecipe, setSelectedRecipe] = useState(null)
+  const [recipeId, setRecipeId] = useState(35626)
+  // const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09") //refactor
   const [bookmarkList, setBookmarkList] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+
 
   function toggleMenu() {
     setDisplayMenuStatus(prev => !prev)
@@ -59,68 +61,86 @@ function App() {
     })
   }
 
-  // function displaySelectedMenu() {
-  //   const recipeEl = {
-
-  //   }
-  // }
 
 
   useEffect(() => {
     async function getMenu() {
-      // const menuUrl = await fetch("https://forkify-api.herokuapp.com/api/search?q=pizza")
-      const menuUrl = await fetch("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza") //refactor code
+      const menuUrl = await fetch("https://forkify-api.herokuapp.com/api/search?q=pizza")
       const menuData = await menuUrl.json()
-      // setMenus(menuData.recipes)
-      const allMenu = menuData.data.recipes
-      setMenus(allMenu) // refactor code
+      setMenus(menuData.recipes)
     }
     getMenu()
+    // fetch("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza")
+    // .then(res => {
+    //   return res.json()
+    // })
+    // .then(data => setMenus(data))
 
     async function getSelectedrecipe() {
-      // const recipeUrl = await fetch(`https://forkify-api.herokuapp.com/api/get?rId=${recipeId}`)
-      const recipeUrl = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`) // refactor
+      const recipeUrl = await fetch(`https://forkify-api.herokuapp.com/api/get?rId=${recipeId}`)
       const recipeData = await recipeUrl.json()
-      const allRecipe = recipeData.data.recipe
-      // setSelectedRecipe(recipeData.recipe)
-      setSelectedRecipe({allRecipe})
-      // setSelectedRecipe(
-      //   id: allRecipe.id,
-      //   ingredients: allRecipe.ingredients,
-      //   imageUrl: allRecipe.image_url,
-      //   sourceUrl: allRecipe.source_url,
-      //   title: allRecipe.title,
-      //   servings: allRecipe.servings,
-      //   cookingTime: allRecipe.cooking_time
-
-      // ) //refactor
+      setSelectedRecipe(recipeData.recipe)
     }
     getSelectedrecipe()
 
   }, [recipeId])
 
 
+
+
   // ============= MAPPING COMPONENT ======================
 
-  const menuElement = menus.map(menu => {
+  // function pagination(currentPage) {
+  //   // const newMenu = []
+  //   for (let i = currentPage; i < currentPage * 5; i++) {
+  //     // newMenu.push(menus[i])
+  //     // setMenus([menus[i]])
+  //     console.log(menus[i])
+  //   }
+  // }
+  // pagination(currentPage)
+
+
+  function generateMenuList() {
+    const menuElement = menus.map(menu => {
+      return (
+        <Menu 
+          key={menu.recipe_id}
+          recipe={menu.recipe_id}
+          title={menu.title}
+          imageUrl={menu.image_url}
+          publisher={menu.publisher}
+          getRecipe={() => getRecipeId(menu.recipe_id)}
+        />
+      )
+    })
+    return menuElement
+  }
+
+  function generateSelectedRecipe() {
     return (
-      <Menu 
-        // key={menu.recipe_id}
-        // recipe={menu.recipe_id}
-        // title={menu.title}
-        // imageUrl={menu.image_url}
-        // publisher={menu.publisher}
-        // getRecipe={() => getRecipeId(menu.recipe_id)}
-        // + refactor
-        key={menu.id}
-        recipe={menu.id}
-        title={menu.title}
-        imageUrl={menu.image_url}
-        publisher={menu.publisher}
-        getRecipe={() => getRecipeId(menu.id)}
+      <Hero 
+          menuImage={selectedRecipe.image_url}
+          title={selectedRecipe.title}
+          serving={servingCount}
+          addServing={addServing}
+          reduceServing={reduceServing}
+          saveRecipe={bookmarkRecipe}
+          bookmarked={bookmarkList}
       />
     )
-  })
+  }
+
+  function generateRecipeIngredients() {
+    return (
+      <RecipeList
+          recipeId={selectedRecipe.recipe_id}
+          recipeIngredients={selectedRecipe.ingredients}
+      />
+    )
+  }
+  
+
 
   const bookmarkElement = bookmarkList.map(item => {
     return (
@@ -132,14 +152,13 @@ function App() {
       />
     )
   })
-  console.log(selectedRecipe)
   // ==================================================
   return (
     <div>
       <article 
         className={`menu-list ${displayMenuStatus ? "show-menu" : "remove-menu"} ${isMenuSelected? "remove-menu" : "show-menu"}`}
       >
-        {menuElement}
+        {menus && generateMenuList()}
       </article>
       <Navbar 
         toggle={toggleMenu}  
@@ -149,25 +168,8 @@ function App() {
         {isBookmarkDisplayed && bookmarkElement}
       </article>
       <main>
-        <Hero 
-          // menuImage={selectedRecipe.image_url}
-          // title={selectedRecipe.title}
-          // serving={servingCount}
-          // menuImage={selectedRecipe.image_url} //refactor
-          // title={selectedRecipe.title}
-          // serving={servingCount}
-          
-          addServing={addServing}
-          reduceServing={reduceServing}
-          saveRecipe={bookmarkRecipe}
-          bookmarked={bookmarkList}
-        />
-        <RecipeList
-          // recipeId={selectedRecipe.recipe_id}
-          // recipeIngredients={selectedRecipe.ingredients}
-          recipeId={selectedRecipe.id} //refactor
-          recipeIngredients={selectedRecipe.ingredients}
-        />
+        {selectedRecipe && generateSelectedRecipe()}
+        {selectedRecipe && generateRecipeIngredients()}
         <Cook />
       </main>
       <Footer />

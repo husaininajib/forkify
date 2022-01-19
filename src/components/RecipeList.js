@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid'
 export default function RecipeList(props) {
     function displayRecipeList() {
         const recipeList = props.recipeIngredients
-        const ingredientsElement = recipeList.map((item, index, arr) => {
+        const ingredientsElement = recipeList.map(item => {
             return (
                 <li key={nanoid()}>
                     <i className="fas fa-check"></i> 
