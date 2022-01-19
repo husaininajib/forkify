@@ -17,7 +17,7 @@ export default function Navbar(props) {
                     <div className="write-icon text-2xl">
                         <i className="far fa-edit"></i>
                     </div>
-                    <div className="bookmark-icon text-2xl">
+                    <div className="bookmark-icon text-2xl" onClick={props.toggleBookmark}>
                         <i className="far fa-bookmark"></i>
                     </div>
                 </article>

@@ -1,6 +1,8 @@
 import React from "react";
 
 export default function Hero(props) {
+    
+
     return (
         <section className="hero">
             <div className="img-container">
@@ -21,15 +23,15 @@ export default function Hero(props) {
                     <div className="flex items-center">
                         <i className="fas fa-users mr-2"></i>
                         <p>
-                            <span className="font-bold">1 </span> SERVINGS
+                            <span className="font-bold">{props.serving} </span> SERVINGS
                         </p>
                         <div className="add-minus-container flex gap-2 ml-2">
-                            <i className="fas fa-plus-circle"></i>
-                            <i className="fas fa-minus-circle"></i>
+                            <i className="fas fa-plus-circle" onClick={props.addServing}></i>
+                            <i className="fas fa-minus-circle" onClick={props.reduceServing}></i>
                         </div>
                     </div>
                 </div>
-                <div className="right-side">
+                <div className="right-side" onClick={props.saveRecipe}>
                     <i className="fas fa-bookmark"></i>
                 </div>
             </article>

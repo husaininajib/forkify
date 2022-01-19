@@ -6,9 +6,9 @@ export default function Menu(props) {
                 className="menu-card flex items-center gap-3 py-4 border pl-2"
                 onClick={props.getRecipe}
             >
-                <div className="menu-img">
+                <figure className="menu-img">
                     <img src={props.imageUrl} alt="" />
-                </div>
+                </figure>
                 <div className="menu-detail">
                     <h3 className="font-semibold uppercase">{props.title}</h3>
                     <p className="mt-1">{props.publisher}</p>
