@@ -2,13 +2,26 @@ import React, {useState, useEffect} from "react";
 import { nanoid } from 'nanoid'
 
 export default function RecipeList(props) {
+    // function displayRecipeList() {
+    //     const recipeList = props.recipeIngredients
+    //     const ingredientsElement = recipeList.map(item => {
+    //         return (
+    //             <li key={nanoid()}>
+    //                 <i className="fas fa-check"></i> 
+    //                 <span>{item}</span>
+    //             </li>
+    //         )
+    //     })
+    //     return ingredientsElement
+    // }
+
     function displayRecipeList() {
         const recipeList = props.recipeIngredients
         const ingredientsElement = recipeList.map(item => {
             return (
                 <li key={nanoid()}>
                     <i className="fas fa-check"></i> 
-                    <span>{item}</span>
+                    <span>{`${item.quantity} ${item.unit} ${item.description}`}</span>
                 </li>
             )
         })

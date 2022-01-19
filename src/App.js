@@ -16,8 +16,8 @@ function App() {
   const [servingCount, setServingCount] = useState(1)
   const [menus, setMenus] = useState(null) 
   const [selectedRecipe, setSelectedRecipe] = useState(null)
-  const [recipeId, setRecipeId] = useState(35626)
-  // const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09") //refactor
+  // const [recipeId, setRecipeId] = useState(35626)
+  const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09") //refactor
   const [bookmarkList, setBookmarkList] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -64,24 +64,36 @@ function App() {
 
 
   useEffect(() => {
-    async function getMenu() {
-      const menuUrl = await fetch("https://forkify-api.herokuapp.com/api/search?q=pizza")
-      const menuData = await menuUrl.json()
-      setMenus(menuData.recipes)
-    }
-    getMenu()
-    // fetch("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza")
-    // .then(res => {
-    //   return res.json()
-    // })
-    // .then(data => setMenus(data))
+    // async function getMenu() {
+    //   const menuUrl = await fetch("https://forkify-api.herokuapp.com/api/search?q=pizza")
+    //   const menuData = await menuUrl.json()
+    //   setMenus(menuData.recipes)
+    // }
+    // getMenu()
+    fetch("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza")
+    .then(res => {
+      return res.json()
+    })
+    .then(data => {
+      const menuList=data.data.recipes
+      setMenus(menuList)
+    })
 
-    async function getSelectedrecipe() {
-      const recipeUrl = await fetch(`https://forkify-api.herokuapp.com/api/get?rId=${recipeId}`)
-      const recipeData = await recipeUrl.json()
-      setSelectedRecipe(recipeData.recipe)
-    }
-    getSelectedrecipe()
+    // async function getSelectedrecipe() {
+    //   const recipeUrl = await fetch(`https://forkify-api.herokuapp.com/api/get?rId=${recipeId}`)
+    //   const recipeData = await recipeUrl.json()
+    //   setSelectedRecipe(recipeData.recipe)
+    // }
+    // getSelectedrecipe()
+
+    fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`)
+    .then(res => {
+      return res.json()
+    })
+    .then(data => {
+      const recipeDetails = data.data.recipe
+      setSelectedRecipe({recipeDetails})
+    }) 
 
   }, [recipeId])
 
@@ -105,8 +117,14 @@ function App() {
     const menuElement = menus.map(menu => {
       return (
         <Menu 
-          key={menu.recipe_id}
-          recipe={menu.recipe_id}
+          // key={menu.recipe_id}
+          // recipe={menu.recipe_id}
+          // title={menu.title}
+          // imageUrl={menu.image_url}
+          // publisher={menu.publisher}
+          // getRecipe={() => getRecipeId(menu.recipe_id)}
+          key={menu.id}
+          recipe={menu.id}
           title={menu.title}
           imageUrl={menu.image_url}
           publisher={menu.publisher}
@@ -118,10 +136,18 @@ function App() {
   }
 
   function generateSelectedRecipe() {
+    const recipeInfo = selectedRecipe.recipeDetails
     return (
       <Hero 
-          menuImage={selectedRecipe.image_url}
-          title={selectedRecipe.title}
+          // menuImage={selectedRecipe.image_url}
+          // title={selectedRecipe.title}
+          // serving={servingCount}
+          // addServing={addServing}
+          // reduceServing={reduceServing}
+          // saveRecipe={bookmarkRecipe}
+          // bookmarked={bookmarkList}
+          menuImage={recipeInfo.image_url}
+          title={recipeInfo.title}
           serving={servingCount}
           addServing={addServing}
           reduceServing={reduceServing}
@@ -132,10 +158,11 @@ function App() {
   }
 
   function generateRecipeIngredients() {
+    const recipeInfo = selectedRecipe.recipeDetails
     return (
       <RecipeList
-          recipeId={selectedRecipe.recipe_id}
-          recipeIngredients={selectedRecipe.ingredients}
+          recipeId={recipeInfo.id}
+          recipeIngredients={recipeInfo.ingredients}
       />
     )
   }
