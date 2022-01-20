@@ -16,10 +16,42 @@ function App() {
   const [menus, setMenus] = useState(null) 
   const [currentMenu, setCurrentMenu] = useState(null)
   const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09")
-  const [bookmarkList, setBookmarkList] = useState([])
+  const [bookmarkList, setBookmarkList] = useState([]) // ************
   const [servingCount, setServingCount] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
 
+  useEffect(() => {
+    fetch("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza")
+    .then(res => res.json())
+    .then(data => {
+      const menuList=data.data.recipes
+      const newMenuList = menuList.map(item => {
+        return {...item, isSaved: false}
+      })
+      setMenus(newMenuList)
+    })
+
+    fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`)
+    .then(res => res.json())
+    .then(data => {
+
+      const recipeDetails = data.data.recipe
+      const newCurrentMenu = {...recipeDetails, isSaved: false}
+
+      setCurrentMenu(newCurrentMenu)
+      localStorage.setItem("Menu", JSON.stringify())
+    }) 
+  }, [recipeId])
+
+  function getRecipeId(id) { // to fetch the recipe url
+    menus.forEach(menu => {
+      if (menu.id === id) {
+        setRecipeId(id)
+      }
+    })
+    setIsMenuSelected(prev => !prev)
+    setIsMenuOpened(false)
+  }
 
   function toggleMenu() {
     setIsMenuOpened(prev => !prev)
@@ -44,49 +76,14 @@ function App() {
     })
   }
 
-  function getRecipeId(id) { // to fetch the recipe url
-    menus.forEach(menu => {
-      if (menu.id === id) {
-        setRecipeId(id)
-      }
-    })
-    setIsMenuSelected(prev => !prev)
-    setIsMenuOpened(false)
-  }
+  function addBookmarkRecipe(menu) {
+    const newBookmarkList = [...bookmarkList, menu]
+    setBookmarkList(newBookmarkList)
 
-  function saveMenu() {
-    setCurrentMenu(prev => {
-      return {...prev, isSaved: !prev.isSaved}
-    })
-    // setBookmarkList(prev => {
-    //   return currentMenu.isSaved ? [...prev, currentMenu] : [...prev]
-    // })
-    const allSavedMenus = []
-    currentMenu.isSaved ? allSavedMenus.push(currentMenu) : allSavedMenus.pop(currentMenu)
-    setBookmarkList(allSavedMenus)
-    // setBookmarkList(currentMenu.isSaved ? )
+    
   }
-
   
-  useEffect(() => {
-    fetch("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza")
-    .then(res => res.json())
-    .then(data => {
-      const menuList=data.data.recipes
-      setMenus(menuList)
-    })
 
-    fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`)
-    .then(res => res.json())
-    .then(data => {
-
-      const recipeDetails = data.data.recipe
-      const newCurrentMenu = {...recipeDetails, isSaved: false}
-
-      setCurrentMenu(newCurrentMenu)
-        // localStorage.setItem("Menu", JSON.stringify())
-    }) 
-  }, [recipeId])
 
   // ============= MAPPING COMPONENT ======================
 
@@ -126,8 +123,8 @@ function App() {
         servingCount={currentMenu.servings}
         addServingCount={addServing}
         reduceServingCount={reduceServing}
-        saveRecipe={saveMenu}
-        bookmarkedList={bookmarkList}
+        handleBookmarkClick={() => addBookmarkRecipe(currentMenu)}
+        allBookmark={bookmarkList}
       />
     )
   }
@@ -145,7 +142,7 @@ function App() {
     return (
       <Dropdown 
         key={menu.id}
-        imageUrl={menu.imageUrl}
+        imageUrl={menu.image_url}
         title={menu.title}
         publisher={menu.publisher}
       />
@@ -188,4 +185,3 @@ function App() {
 export default App;
 
 
-// currentMenu.isSaved ? bookmarklist.push(currentMenu) : bookmarkList.pop(currentMenu)

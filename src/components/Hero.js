@@ -1,8 +1,21 @@
 import React from "react";
 
 export default function Hero(props) {
-    // console.log(props.bookmarked.isSaved)
-    // console.log(props.item.title)
+
+    // function changeBookmarkColor() {
+    //     const bookmarkList = props.allBookmark
+    //     bookmarkList.foreach(item => {
+    //         if (item.isSaved) {
+
+    //         }
+    //     })
+    // }
+            
+
+        
+
+
+
     return (
         <section className="hero">
             <div className="img-container">
@@ -31,9 +44,11 @@ export default function Hero(props) {
                         </div>
                     </div>
                 </div>
-                <div className="right-side" onClick={props.saveRecipe}>
+                {/* <div className="right-side" onClick={props.saveRecipe}> */}
+                <div className="right-side" onClick={props.handleBookmarkClick}>
                     <i 
-                        className={`fas fa-bookmark ${props.bookmarkedList[0] ? "text-red-500" : "text-white"}`}
+                        // className={`fas fa-bookmark ${props.bookmarkedList[0] ? "text-red-500" : "text-white"}`}
+                        className={`fas fa-bookmark `}
                     >
                     </i>
                 </div>
