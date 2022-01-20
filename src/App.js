@@ -10,7 +10,7 @@ import Dropdown from './components/Dropdown';
 import { nanoid } from 'nanoid'
 
 function App() {
-  const [displayMenuStatus, setDisplayMenuStatus] = useState(false)
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
   const [isMenuSelected, setIsMenuSelected] = useState(false)
   const [showBookmarkList, setShowBookmarkList] = useState(false)
   const [menus, setMenus] = useState(null) 
@@ -22,14 +22,14 @@ function App() {
 
 
   function toggleMenu() {
-    setDisplayMenuStatus(prev => !prev)
+    setIsMenuOpened(prev => !prev)
     setIsMenuSelected(false)
     setShowBookmarkList(false)
   }
 
   function toggleBookmark() {
     setShowBookmarkList(prev => !prev)
-    setDisplayMenuStatus(false)
+    setIsMenuOpened(false)
   }
 
   function addServing() {
@@ -51,26 +51,22 @@ function App() {
       }
     })
     setIsMenuSelected(prev => !prev)
-    setDisplayMenuStatus(false)
+    setIsMenuOpened(false)
   }
 
-  // function bookmarkRecipe() {
-  //   const recipeInfo = currentMenu.recipeDetails
-  //   setBookmarkList(prev => {
-  //     return [...prev, {recipeInfo, isBookmarked: true}]
-  //   })
-  // }
-
-  function bookmarkRecipe() {
-    // const recipeInfo = currentMenu.recipeDetails
-    // setBookmarkList(prev => {
-    //   return [...prev, {recipeInfo, isBookmarked: true}]
-    // })
-    setBookmarkList(prev => {
-      return [...prev, {currentMenu, isSaved: !currentMenu.isSaved}]
+  function saveMenu() {
+    setCurrentMenu(prev => {
+      return {...prev, isSaved: !prev.isSaved}
     })
-
+    // setBookmarkList(prev => {
+    //   return currentMenu.isSaved ? [...prev, currentMenu] : [...prev]
+    // })
+    const allSavedMenus = []
+    currentMenu.isSaved ? allSavedMenus.push(currentMenu) : allSavedMenus.pop(currentMenu)
+    setBookmarkList(allSavedMenus)
+    // setBookmarkList(currentMenu.isSaved ? )
   }
+
   
   useEffect(() => {
     fetch("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza")
@@ -81,17 +77,16 @@ function App() {
     })
 
     fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`)
-    .then(res => res.json()
-)
+    .then(res => res.json())
     .then(data => {
+
       const recipeDetails = data.data.recipe
-      setCurrentMenu({recipeDetails, isSaved: false})
+      const newCurrentMenu = {...recipeDetails, isSaved: false}
+
+      setCurrentMenu(newCurrentMenu)
+        // localStorage.setItem("Menu", JSON.stringify())
     }) 
-
   }, [recipeId])
-
-
-
 
   // ============= MAPPING COMPONENT ======================
 
@@ -123,53 +118,48 @@ function App() {
   }
 
   function generateSelectedRecipe() {
-    const menuInfo = currentMenu.recipeDetails
     return (
-      <Hero 
-        imageUrl={menuInfo.image_url}
-        title={menuInfo.title}
-        servingCount={servingCount}
+      <Hero
+        imageUrl={currentMenu.image_url}
+        title={currentMenu.title}
+        time={currentMenu.cooking_time}
+        servingCount={currentMenu.servings}
         addServingCount={addServing}
         reduceServingCount={reduceServing}
-        saveRecipe={bookmarkRecipe}
+        saveRecipe={saveMenu}
         bookmarkedList={bookmarkList}
       />
     )
   }
 
   function generateRecipeIngredients() {
-    const menuInfo = currentMenu.recipeDetails
     return (
       <RecipeList
-          recipeId={menuInfo.id}
-          ingredientsList={menuInfo.ingredients}
+          recipeId={currentMenu.id}
+          ingredientsList={currentMenu.ingredients}
       />
     )
   }
   
-
-
-  // const bookmarkElement = bookmarkList.map(item => {
-  //   return (
-  //     // <Dropdown 
-  //     //   key={nanoid()}
-  //     //   menuName={item.currentMenu.title}
-  //     //   menuImage={item.currentMenu.image_url}
-  //     //   menuPublisher={item.currentMenu.publisher}
-  //     // />
-  //     <Dropdown 
-  //       key={nanoid()}
-  //       // menuName={item.currentMenu.title}
-  //       // menuImage={item.currentMenu.image_url}
-  //       // menuPublisher={item.currentMenu.publisher}
-  //     />
-  //   )
-  // })
+  const dropdownElement = bookmarkList.map(menu => {
+    return (
+      <Dropdown 
+        key={menu.id}
+        imageUrl={menu.imageUrl}
+        title={menu.title}
+        publisher={menu.publisher}
+      />
+    )
+  })
+  
   // ==================================================
   return (
     <div>
       <article 
-        className={`menu-list ${displayMenuStatus ? "show-menu" : "remove-menu"} ${isMenuSelected? "remove-menu" : "show-menu"}`}
+        className={
+          `menu-list ${isMenuOpened && "show-menu"} 
+          ${isMenuSelected && "remove-menu"}`
+        }
       >
         {menus && generateMenuList()}
       </article>
@@ -178,15 +168,16 @@ function App() {
         toggleBookmark={toggleBookmark}
       />
       <article className="dropdown">
-        {/* {showBookmarkList && bookmarkElement} */}
+        {showBookmarkList && dropdownElement}
+
       </article>
       <main>
         {currentMenu && generateSelectedRecipe()}
         {currentMenu && generateRecipeIngredients()}
         {
           currentMenu &&
-          <Cook 
-          sourceUrl={currentMenu.recipeDetails.source_url}
+        <Cook 
+          sourceUrl={currentMenu.sourceUrl}
         />}
       </main>
       <Footer />
@@ -195,3 +186,6 @@ function App() {
 }
 
 export default App;
+
+
+// currentMenu.isSaved ? bookmarklist.push(currentMenu) : bookmarkList.pop(currentMenu)

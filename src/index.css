@@ -20,7 +20,7 @@ nav i,
 #recipe h2,
 #cook h2,
 .menu-detail h3 {
-    color: #f38e82;
+    /* color: #f38e82; */
 }
 #recipe {
     background-color: #F2EFEE
@@ -140,7 +140,7 @@ header {
     place-items: center;
 }
 .right-side i {
-    color: #ffffff;
+    /* color: #ffffff; */
     font-size: .8rem;
 }
 /* ********* RECIPELIST COMPONENT ********** */

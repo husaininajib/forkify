@@ -8,11 +8,13 @@ export default function Dropdown(props) {
                 
             >
                 <figure className="menu-img">
-                    <img src={props.menuImage} alt="" />
+                    <img src={props.imageUrl} alt="" />
                 </figure>
                 <div className="menu-detail">
-                    <h3 className="font-semibold uppercase">{props.menuName}</h3>
-                    <p className="mt-1">{props.menuPublisher}</p>
+                    <h3 
+                        className="font-semibold uppercase">{props.title}
+                    </h3>
+                    <p className="mt-1">{props.publisher}</p>
                 </div>
             </div>
         </div>

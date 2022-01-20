@@ -33,7 +33,7 @@ export default function Hero(props) {
                 </div>
                 <div className="right-side" onClick={props.saveRecipe}>
                     <i 
-                        className={`fas fa-bookmark ${props.bookmarkedList.isSaved ? "text-red-500" : "text-white"}`}
+                        className={`fas fa-bookmark ${props.bookmarkedList[0] ? "text-red-500" : "text-white"}`}
                     >
                     </i>
                 </div>
