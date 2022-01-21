@@ -23,7 +23,7 @@ export default function RecipeList(props) {
         <section id="recipe" className="grid place-items-center pb-10 px-4">
             <h2 className="mt-8 mb-7 font-bold">RECIPE INGREDIENTS</h2>
             <ul className="grid justify-start gap-6">
-                {props.ingredientsList && displayRecipeList()}
+                {/* {props.ingredientsList && displayRecipeList()} */}
             </ul>
         </section>
     )
