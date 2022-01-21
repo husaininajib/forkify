@@ -8,7 +8,6 @@ import Footer from './components/Footer';
 import Menu from './components/Menu';
 import Dropdown from './components/Dropdown';
 import { nanoid, random } from 'nanoid'
-import Search from './components/Search';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false)
@@ -17,9 +16,9 @@ function App() {
   // const [showBookmarkList, setShowBookmarkList] = useState(false)
   const [menus, setMenus] = useState([]) 
   const [currentMenu, setCurrentMenu] = useState([])
-  const [recipeId, setRecipeId] = useState(null)
+  const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09")
   const [bookmarkList, setBookmarkList] = useState([]) // ************
-  const [searchValue, setSearchValue] = useState("sushi")
+  const [searchValue, setSearchValue] = useState("pizza")
   const [input, setInput] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [maxMenuPerPage, setMaxMenuPerPage] = useState(7)
@@ -35,7 +34,7 @@ function App() {
   }
   const previousPage = () => {
     if (currentPage > 1) {
-        setCurrentPage(oldNumber => (oldNumber - 1))
+      setCurrentPage(oldNumber => (oldNumber - 1))
     }
   }
 
@@ -48,81 +47,52 @@ function App() {
     ev.preventDefault()
     setSearchValue(input)
     setInput("")
+    setIsMenuBarOpened(true)
+    setCurrentPage(1)
   }
+
 
   // fetching
-  // const fetchMenus = async () => {
-  //   const menuUrl = `https://forkify-api.herokuapp.com/api/v2/recipes?search=${searchValue}`
-  //   setIsLoading(true)
-  //   const fetchMenu = await fetch(menuUrl)
-  //   const menuData = await fetchMenu.json()
-  //   const menuList = menuData.data.recipes
-  //   setMenus(menuList)
-  //   setIsLoading(false)
-  //   setRecipeId(menuList[0].id)
-  // }
-
-  // const fetchRecipe = async () => {
-  //   menus && setRecipeId(menus[0].id)
-  //   const recipeUrl = `https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`
-  //   setIsLoading(true)
-  //   const fetchRecipe = await fetch(recipeUrl)
-  //   const recipeData = await fetchRecipe.json()
-  //   const recipeList = recipeData.data.recipe
-  //   const newCurrentMenu = {...recipeList, isSaved: false}
-  //   setCurrentMenu(newCurrentMenu)
-  //   setIsLoading(false)
-  // }
-
   const menuUrl = `https://forkify-api.herokuapp.com/api/v2/recipes?search=${searchValue}`
+  const recipeUrl = `https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`
   
+  const fetchMenuData = async () => {
+    setIsLoading(true)
+    const response = await fetch(menuUrl)
+    const data = await response.json()
+    setMenus(data.data.recipes)
+    setIsLoading(false)
+  }
+
+  const fetchRecipeData = async () => {
+    setIsLoading(true)
+    const response = await fetch(recipeUrl)
+    const data = await response.json()
+    const recipeList = data.data.recipe
+    const newCurrentMenu = {...recipeList, isSaved: false}
+    setCurrentMenu(newCurrentMenu)
+    setIsLoading(false)
+  }
+
   useEffect(() => {
-    fetchData()
+    fetchMenuData()
+    fetchRecipeData()
+  }, [recipeId,searchValue])
 
-  }, [searchValue])
-
-
-  const [menus, setMenus] = useState([])
-  const [currentMenu, setCurrentMenu] = useState([])
-  const [recipeId, setRecipeId] = useState(null)
-  const menuUrl = `https://forkify-api.herokuapp.com/api/v2/recipes?search=${searchValue}`
-  
-  const fetchData = () => {
-    fetch(menuUrl)
-      .then(res => {return res.json()})
-      .then(data => {
-        const menuList = data.data.recipes
-        setMenus(menuList)
-        setRecipeId(menuList[0].id)
-        return fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`)
-      })
-      .then(res => {return res.json()})
-      .then(data => setCurrentMenu(data.data.recipe))
-  } 
-
-
-
-  // useEffect(() => {
-  //   fetchMenus()
-  //   menus && fetchRecipe()
-  // }, [searchValue])
-
-
-  function getRecipeId(id) {
-    menus.forEach(menu => {
-      if (menu.id === id) {
-        setRecipeId(id)
-      }
-    })
-    // setIsMenuSelected(prev => !prev)
-    // setIsMenuOpened(false)
+  const getRecipeId = (id) => {
+    setRecipeId(id)
+    setIsMenuBarOpened(false)
   }
 
 
+  // toggle menu element
   const toggleMenuBar = () => {
       setIsMenuBarOpened(oldState => !oldState)
   }
 
+  const handleSelectMenu = () => {
+    setIsMenuBarOpened(false)
+  }
 
 
 
@@ -142,10 +112,10 @@ function App() {
           image={menu.image_url}
           title={menu.title}
           publisher={menu.publisher}
+          handleClickMenu={() => getRecipeId(menu.id)}
         />
     )
   })
-
 
   // ====================== RENDERING APP COMPONENTS ============================
 
@@ -157,7 +127,7 @@ function App() {
           />
           <form action="" className="" onSubmit={handleSubmit}>
               <input 
-                  type="search" name="search" id="search" 
+                  type="text" name="search" id="search" 
                   className={`p-2 border`}
                   onChange={handleSearch}
               />
@@ -166,7 +136,8 @@ function App() {
               </button>
           </form>
 
-          <nav className={`menu-list relative ${isMenuBarOpened && "show-menu"}`}>
+          <nav className={`menu-list relative ${isMenuBarOpened && "show-menu"}`}
+          >
               {menuElement}
               <div className="move-page flex justify-end text-2xl">
 
@@ -176,10 +147,21 @@ function App() {
           </nav>
         </header>
         <main>
-          <Hero />
-          <ServingDetail />
-          <RecipeList />
-          <Cook />
+          <Hero 
+            imageUrl={currentMenu.image_url}
+            title={currentMenu.title}
+          />
+          <ServingDetail 
+            time={currentMenu.cooking_time}
+            serving={currentMenu.servings}
+            loading={isLoading}
+          />
+          <RecipeList 
+            ingredients={currentMenu.ingredients}
+          />
+          <Cook 
+            source={currentMenu.source_url}
+          />
         </main>
         <Footer />
       </>

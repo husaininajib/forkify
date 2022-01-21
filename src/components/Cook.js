@@ -7,7 +7,7 @@ export default function Cook(props) {
             <p className="pb-7 text-center">This recipe was carefully designed and tested by Closet Cooking. Please check out directions at their website.</p>
 
             <button>
-                <a href={props.sourceUrl}>
+                <a href={props.source}>
                     DIRECTIONS 
                 </a>
                 <i className="fas fa-arrow-right ml-2"></i>
