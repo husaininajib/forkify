@@ -30,7 +30,8 @@ footer,
 button,
 .img-container::before,
 .recipe-title span,
-.right-side {
+.right-side,
+.spinner-container {
     background-image: linear-gradient(to right bottom,#fbdb89,#f48982);
 }
 
@@ -58,6 +59,9 @@ form input.show {
     display: inline-block;
 }
 
+.fa-arrow-right.hide {
+    display: none;
+}
 
 
 /* ********* MENU COMPONENT ********** */
@@ -196,7 +200,7 @@ button {
 /* ************** DROPDOWN COMPONENT ************* */
 
 .dropdown {
-    transform: translateX(0);
+    /* transform: translateX(100%); */
     right: 0;
     width: 75%;
 }

@@ -8,12 +8,13 @@ import Footer from './components/Footer';
 import Menu from './components/Menu';
 import Dropdown from './components/Dropdown';
 import { nanoid, random } from 'nanoid'
+import Loading from './components/Loading';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [isMenuBarOpened, setIsMenuBarOpened] = useState(false)
   const [isMenuSelected, setIsMenuSelected] = useState(false)
-  // const [showBookmarkList, setShowBookmarkList] = useState(false)
+  const [isBookmarkOpened, setIsBookmarkOpened] = useState(false)
   const [menus, setMenus] = useState([]) 
   const [currentMenu, setCurrentMenu] = useState([])
   const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09")
@@ -90,20 +91,35 @@ function App() {
       setIsMenuBarOpened(oldState => !oldState)
   }
 
-  const handleSelectMenu = () => {
-    setIsMenuBarOpened(false)
+  // toggle bookmark
+
+  const toggleBookmark = () => {
+    setIsBookmarkOpened(prev => !prev)
+  }
+
+  // bookmart menu
+
+  const addToBookmark = () => {
+    console.log("clicked")
   }
 
 
-
-
-
   
-
-
+  
+  
+  
+  
   // ============= MAPPING COMPONENT ======================
-
-
+  
+  const PageArrow = () => {
+    const calc = Math.ceil(menus.length / maxMenuPerPage)
+    return (
+      <div className="move-page flex justify-end text-2xl">
+          {currentPage > 1 && <i className="fas fa-arrow-left mr-auto" onClick={previousPage}></i>}
+          <i className={`fas fa-arrow-right ml-auto ${currentPage === calc && "hide"}`} onClick={nextPage}></i>
+      </div>
+    )
+  }
 
   const menuElement = page.map(menu => {
     return (
@@ -117,6 +133,38 @@ function App() {
     )
   })
 
+
+  const Edit = () => {
+    return(
+        <div className="write-icon text-2xl">
+            <i className="far fa-edit"></i>
+        </div>
+    )
+  }
+
+  const Bookmark = () => {
+    return (
+        <div className="bookmark-icon text-2xl" onClick={toggleBookmark}>
+            <i className="far fa-bookmark"></i>
+        </div>
+    )
+  }
+
+  const Form = () => { // if put form to return, onSubmit function cannot run properly
+    return (
+        <form action="" className="" onSubmit={handleSubmit}>
+            <input 
+                type="text" name="search" id="search" 
+                className={`p-2 border`}
+                onChange={handleSearch}
+            />
+            <button type="submit">
+                <i className="fas fa-search text-2xl"></i>
+            </button>
+        </form>
+    )
+  }
+
   // ====================== RENDERING APP COMPONENTS ============================
 
     return (
@@ -124,8 +172,11 @@ function App() {
         <header className="flex justify-between items-center px-4 ">
           <Navbar
             handleMenuClick={toggleMenuBar}
+            handleSubmit={handleSubmit}
+            handleSearch={handleSearch}
           />
-          <form action="" className="" onSubmit={handleSubmit}>
+          <div className="flex items-center gap-2">
+            <form action="" className="" onSubmit={handleSubmit}>
               <input 
                   type="text" name="search" id="search" 
                   className={`p-2 border`}
@@ -134,27 +185,35 @@ function App() {
               <button type="submit">
                   <i className="fas fa-search text-2xl"></i>
               </button>
-          </form>
-
-          <nav className={`menu-list relative ${isMenuBarOpened && "show-menu"}`}
-          >
-              {menuElement}
-              <div className="move-page flex justify-end text-2xl">
-
-                  {currentPage > 1 && <i className="fas fa-arrow-left" onClick={previousPage}></i>}
-                  <i className="fas fa-arrow-right ml-auto" onClick={nextPage}></i>
-              </div>
-          </nav>
+            </form>
+            <Edit />
+            <Bookmark />
+          </div>
         </header>
+        <nav 
+          className={`menu-list relative ${isMenuBarOpened && "show-menu"}`}
+        >
+            {menuElement}
+            <PageArrow />
+        </nav>
+        <Dropdown 
+          handleBookmark={isBookmarkOpened}
+          image={currentMenu.image_url}
+          title={currentMenu.title}
+          publisher={currentMenu.publisher}
+        />
         <main>
-          <Hero 
-            imageUrl={currentMenu.image_url}
-            title={currentMenu.title}
-          />
+          {isLoading? <Loading /> : 
+            <Hero 
+              imageUrl={currentMenu.image_url}
+              title={currentMenu.title}
+            />
+          }
           <ServingDetail 
             time={currentMenu.cooking_time}
             serving={currentMenu.servings}
             loading={isLoading}
+            handleAddToBookmark={addToBookmark}
           />
           <RecipeList 
             ingredients={currentMenu.ingredients}
