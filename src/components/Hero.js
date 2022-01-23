@@ -14,14 +14,4 @@ export default function Hero(props) {
                 </h1>
         </section>
     )
-
-    // return (
-    //         <section className=" hero img-container">
-    //             {/* <img src={props.imageUrl} alt="" />
-    //             <h1 className="recipe-title"> 
-    //             <span>{props.title}</span>
-    //             </h1> */}
-    //             {/* <Loading /> */}
-    //         </section>
-    // )
 }

@@ -9,6 +9,7 @@ import Menu from './components/Menu';
 import Dropdown from './components/Dropdown';
 import { nanoid, random } from 'nanoid'
 import Loading from './components/Loading';
+// import RecipeList from './components/RecipeList';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false)
@@ -17,15 +18,17 @@ function App() {
   const [isBookmarkOpened, setIsBookmarkOpened] = useState(false)
   const [menus, setMenus] = useState([]) 
   const [currentMenu, setCurrentMenu] = useState([])
+  const [currentServing, setCurrentServing] = useState(1)
   const [recipeId, setRecipeId] = useState("5ed6604591c37cdc054bcd09")
-  const [bookmarkList, setBookmarkList] = useState([]) // ************
   const [searchValue, setSearchValue] = useState("pizza")
   const [input, setInput] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [maxMenuPerPage, setMaxMenuPerPage] = useState(7)
+  const [bookmarkList, setBookmarkList] = useState([]) // ************
+  // const [ingredients, setIngredients] = useState(props.ingredients)
 
-  const lastPage = currentPage * maxMenuPerPage //50 -10
-  const firstPage = lastPage - maxMenuPerPage //45 -5
+  const lastPage = currentPage * maxMenuPerPage
+  const firstPage = lastPage - maxMenuPerPage 
   const page = menus.slice(firstPage, lastPage)
 
 
@@ -54,10 +57,8 @@ function App() {
 
 
   // fetching
-  const menuUrl = `https://forkify-api.herokuapp.com/api/v2/recipes?search=${searchValue}`
-  const recipeUrl = `https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`
-  
   const fetchMenuData = async () => {
+    const menuUrl = `https://forkify-api.herokuapp.com/api/v2/recipes?search=${searchValue}`
     setIsLoading(true)
     const response = await fetch(menuUrl)
     const data = await response.json()
@@ -66,25 +67,29 @@ function App() {
   }
 
   const fetchRecipeData = async () => {
+  const recipeUrl = `https://forkify-api.herokuapp.com/api/v2/recipes/${recipeId}`
     setIsLoading(true)
     const response = await fetch(recipeUrl)
     const data = await response.json()
     const recipeList = data.data.recipe
     const newCurrentMenu = {...recipeList, isSaved: false}
     setCurrentMenu(newCurrentMenu)
+    setCurrentServing(newCurrentMenu.servings)
     setIsLoading(false)
   }
 
   useEffect(() => {
     fetchMenuData()
     fetchRecipeData()
+
   }, [recipeId,searchValue])
+
+  //get recipe id to pass to second fetch
 
   const getRecipeId = (id) => {
     setRecipeId(id)
     setIsMenuBarOpened(false)
   }
-
 
   // toggle menu element
   const toggleMenuBar = () => {
@@ -97,17 +102,29 @@ function App() {
     setIsBookmarkOpened(prev => !prev)
   }
 
-  // bookmart menu
+  // bookmark menu
 
   const addToBookmark = () => {
     console.log("clicked")
   }
 
+  // add serving
 
-  
-  
-  
-  
+  function addServing() {
+      setCurrentServing(prevState => {
+          return prevState + 1
+      })
+    }
+
+  // reduce serving
+
+  function reduceServing() {
+      if (currentServing > 1) {
+        setCurrentServing(prevState => {
+            return prevState - 1
+        })
+      }
+  }
   
   // ============= MAPPING COMPONENT ======================
   
@@ -133,9 +150,33 @@ function App() {
     )
   })
 
+  const Ingredients = () => {
+    const recipe = currentMenu.ingredients
+    const recipeElement = recipe.map(item => {
+      return (
+        <RecipeList 
+          key={nanoid()}
+          defaultServing={currentMenu.servings}
+          quantity={item.quantity}
+          count={currentServing}
+          unit={item.unit}
+          description={item.description}
+        />
+      )
+    })
+    return (
+      <section id="recipe" className="grid place-items-center pb-10 px-4">
+        <h2 className="mt-8 mb-7 font-bold">RECIPE INGREDIENTS</h2>
+        <ul className="grid justify-start gap-6">
+        {recipeElement}
+        </ul>
+      </section>
+    )
+  }
+
 
   const Edit = () => {
-    return(
+    return (
         <div className="write-icon text-2xl">
             <i className="far fa-edit"></i>
         </div>
@@ -150,7 +191,7 @@ function App() {
     )
   }
 
-  const Form = () => { // if put form to return, onSubmit function cannot run properly
+  const Form = () => { // onSubmit function cannot run properly if use this component
     return (
         <form action="" className="" onSubmit={handleSubmit}>
             <input 
@@ -211,13 +252,13 @@ function App() {
           }
           <ServingDetail 
             time={currentMenu.cooking_time}
-            serving={currentMenu.servings}
+            serving={currentServing}
             loading={isLoading}
             handleAddToBookmark={addToBookmark}
+            handleAdd={addServing}
+            handleReduce={reduceServing}
           />
-          <RecipeList 
-            ingredients={currentMenu.ingredients}
-          />
+          {currentMenu.ingredients && <Ingredients />}
           <Cook 
             source={currentMenu.source_url}
           />
