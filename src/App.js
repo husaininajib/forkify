@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect} from "react"
 import Navbar from "./components/Navbar"
 import Hero from "./components/Hero"
 import ServingDetail from "./components/ServingDetail"
@@ -6,15 +6,14 @@ import RecipeList from "./components/RecipeList"
 import Cook from "./components/Cook"
 import Footer from "./components/Footer"
 import Menu from "./components/Menu"
-import Dropdown from "./components/Dropdown"
 import Loading from "./components/Loading"
-import { nanoid, random } from "nanoid"
+import PageArrow from "./components/PageArrow"
+import Form from "./components/Form"
+import { nanoid } from "nanoid"
 
 function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [isMenuBarOpened, setIsMenuBarOpened] = useState(false)
-  const [isMenuSelected, setIsMenuSelected] = useState(false)
-  const [isBookmarkOpened, setIsBookmarkOpened] = useState(false)
   const [menus, setMenus] = useState([]) 
   const [currentMenu, setCurrentMenu] = useState([])
   const [currentServing, setCurrentServing] = useState(1)
@@ -23,7 +22,6 @@ function App() {
   const [input, setInput] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [maxMenuPerPage, setMaxMenuPerPage] = useState(6)
-  const [bookmarkList, setBookmarkList] = useState([]) // ************
 
   const lastPage = currentPage * maxMenuPerPage
   const firstPage = lastPage - maxMenuPerPage 
@@ -39,7 +37,7 @@ function App() {
     }
   }
 
-  // search
+  // search and submit
   const handleSearch = (ev) => {
     setInput(ev.target.value)
   }
@@ -47,11 +45,9 @@ function App() {
   const handleSubmit = (ev) => {
     ev.preventDefault()
     setSearchValue(input)
-    setInput("")
     setIsMenuBarOpened(true)
     setCurrentPage(1)
   }
-
 
   // fetching
   const fetchMenuData = async () => {
@@ -82,7 +78,6 @@ function App() {
   }, [recipeId,searchValue])
 
   //get recipe id to pass to second fetch
-
   const getRecipeId = (id) => {
     setRecipeId(id)
     setIsMenuBarOpened(false)
@@ -93,28 +88,14 @@ function App() {
       setIsMenuBarOpened(oldState => !oldState)
   }
 
-  // toggle bookmark
-
-  const toggleBookmark = () => {
-    setIsBookmarkOpened(prev => !prev)
-  }
-
-  // bookmark menu
-
-  const addToBookmark = () => {
-    console.log("clicked")
-  }
-
-  // add serving
-
+  // add serving count
   function addServing() {
       setCurrentServing(prevState => {
           return prevState + 1
       })
     }
 
-  // reduce serving
-
+  // reduce serving count
   function reduceServing() {
       if (currentServing > 1) {
         setCurrentServing(prevState => {
@@ -124,28 +105,6 @@ function App() {
   }
   
   // ============= MAPPING COMPONENT ======================
-  
-  const PageArrow = () => {
-    const calc = Math.ceil(menus.length / maxMenuPerPage)
-    return (
-      <div className="move-page flex justify-end text-2xl mt-10">
-        {currentPage > 1 &&
-          <div className="btn-inline mr-auto flex items-center gap-2"  onClick={previousPage}>
-            <i className="bi bi-arrow-left"></i>
-            <span>Page {currentPage - 1}</span>
-          </div>
-        }
-        {currentPage < calc &&
-          <div className={`btn-inline ml-auto flex items-center gap-2 ${currentPage === calc && "hidden"}`} onClick={nextPage}>
-            <span>Page {currentPage + 1}</span>
-            <i className="bi bi-arrow-right"></i>
-          </div>
-        }
-
-
-      </div>
-    )
-  }
 
   const menuElement = page.map(menu => {
     return (
@@ -159,7 +118,7 @@ function App() {
     )
   })
 
-  const Ingredients = () => {
+  const RecipesContainer = () => {
     const recipe = currentMenu.ingredients
     const recipeElement = recipe.map(item => {
       return (
@@ -185,81 +144,43 @@ function App() {
     )
   }
 
+  const styles = {
+    menuContainer: 
+      `menu-container fixed sm:w-9/12 lg:relative lg:top-0 lg:w-2/5    lg:mt-16 lg:translate-x-0 ${isMenuBarOpened && "show-menu"}`,
+    header: "flex justify-between items-center px-4"
+  } 
 
-  const Edit = () => {
-    return (
-        <div className="write-icon text-2xl">
-            <i className="far fa-edit"></i>
-        </div>
-    )
-  }
-
-  const Bookmark = () => {
-    return (
-        <div className="bookmark-icon text-2xl" onClick={toggleBookmark}>
-            <i className="far fa-bookmark"></i>
-        </div>
-    )
-  }
-
-  const Form = () => { // onSubmit function cannot run properly if use this component
-    return (
-        <form action="" className="" onSubmit={handleSubmit}>
-            <input 
-                type="text" name="search" id="search" 
-                className={`p-2 border`}
-                onChange={handleSearch}
-            />
-            <button type="submit">
-                <i className="fas fa-search text-2xl"></i>
-            </button>
-        </form>
-    )
-  }
+  const { menuContainer, header } = styles
 
   // ====================== RENDERING APP COMPONENTS ============================
+
     return (
       <>
-        <header className="flex justify-between items-center px-4 ">
+        <header className={header}>
           <Navbar
             handleMenuClick={toggleMenuBar}
-            handleSubmit={handleSubmit}
-            handleSearch={handleSearch}
           />
-          <div className="flex items-center gap-2">
-            <form action="" className="flex" onSubmit={handleSubmit} >
-              <input 
-                  type="text" name="search" id="search" 
-                  placeholder="search recipes..."
-                  className={`pl-3 py-1`}
-                  onChange={handleSearch}
-              />
-              <button type="submit" className='btn gap-2 text-white'>
-                <i className="bi bi-search text-base text-white"></i>
-                SEARCH
-              </button>
-            </form>
-            {/* <Edit />
-            <Bookmark /> */}
-          </div>
+          <Form 
+            query={handleSearch}
+            value={handleSubmit}
+          />
         </header>
 
         <div className="lg:flex">
-          <nav 
-            className={`menu-list fixed sm:w-9/12 lg:relative lg:top-0 lg:w-2/5 lg:mt-16 lg:translate-x-0 ${isMenuBarOpened && "show-menu"}`}
-          >
-              {menuElement}
-              <PageArrow />
-          </nav>
-          <Dropdown 
-            handleBookmark={isBookmarkOpened}
-            image={currentMenu.image_url}
-            title={currentMenu.title}
-            publisher={currentMenu.publisher}
-          />
+          <div className={menuContainer}>
+            {menuElement}
+            <PageArrow 
+              menus={menus}
+              currentPage={currentPage}
+              maxMenu={maxMenuPerPage}
+              handleNextPage={nextPage}
+              handlePrevPage={previousPage}
+            />
+          </div>
 
-          <main className='lg:w-3/5'>
-            {isLoading? <Loading /> : 
+          <main className="lg:w-3/5">
+            { isLoading? 
+              <Loading /> : 
               <Hero 
                 imageUrl={currentMenu.image_url}
                 title={currentMenu.title}
@@ -269,18 +190,18 @@ function App() {
               time={currentMenu.cooking_time}
               serving={currentServing}
               loading={isLoading}
-              handleAddToBookmark={addToBookmark}
               handleAdd={addServing}
               handleReduce={reduceServing}
               />
-            {currentMenu.ingredients && <Ingredients />}
+            { currentMenu.ingredients && 
+            <RecipesContainer /> }
             <Cook 
               source={currentMenu.source_url}
-              />
+            />
           </main>
 
         </div>
-        {isLoading ? null : <Footer />}
+        { isLoading ? null : <Footer /> }
       </>
     )
 }

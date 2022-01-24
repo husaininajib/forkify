@@ -32,9 +32,6 @@ export default function ServingDetail(props) {
                 <Time />
                 <ServingInfo />
             </div>
-            {/* <div className="right-side" onClick={props.handleAddToBookmark}>
-                <i className={`bi bi-bookmark-fill`}></i>
-            </div> */}
         </div>
     )
 }

@@ -10,18 +10,12 @@
 }
 
 header,
-.hero article,
 #cook,
 .info-container {
     background-color: #F9F5F3;
 }
-header i,
-.left-side i,
-.right-side,
-#recipe i,
-#recipe h2,
-#cook h2,
-.menu-detail h3 {
+
+h1, h2, h3, i {
     color: #f38e82;
 }
 #recipe {
@@ -36,6 +30,20 @@ button,
 .spinner-container,
 .btn {
     background-image: linear-gradient(to right bottom,#fbdb89,#f48982);
+}
+
+.btn, .btn-inline {
+    font-weight: 600;
+    font-size: .85rem;
+    padding: 0.3rem 1.1rem;
+    border-radius: 10rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f5f3;
+    transition: all .2s;
+
 }
 
 /* ********* NAVBAR COMPONENT ********** */
@@ -55,7 +63,11 @@ header {
 form input {
     transition: .2s;
     transform-origin: right;
-    /* display: none; */
+    margin-right: -2rem;
+    border-radius: 10rem;
+    outline: none;
+    padding: .3rem 1rem;
+    width: 70%;
 }
 
 form input.show {
@@ -65,15 +77,11 @@ form input.show {
 
 /* ********* MENU COMPONENT ********** */
 
-.menu-list, .dropdown {
+.menu-container {
     background-color: #ffffff;
-    /* position: fixed; */
     top: 4rem;
     z-index: 1;
     transition: .3s;
-    
-}
-.menu-list {
     transform: translateX(-100%);
     left: 0;
     bottom: 0;
@@ -99,24 +107,6 @@ form input.show {
 }
 .menu-detail p {
     font-size: .95rem;
-}
-
-form input {
-    margin-right: -2rem;
-    border-radius: 10rem;
-    outline: none;
-}
-
-.btn, .btn-inline {
-    font-weight: 600;
-    font-size: .85rem;
-    padding: 0.3rem 1.1rem;
-    border-radius: 10rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f9f5f3;
 }
 
 .move-page .btn-inline span,
@@ -179,10 +169,6 @@ form input {
     display: grid;
     place-items: center;
 }
-.right-side i {
-    /* color: #ffffff; */
-    font-size: .8rem;
-}
 
 /* ********* RECIPELIST COMPONENT ********** */
 
@@ -192,20 +178,14 @@ form input {
     gap: .5rem;
 }
 
-button {
-    padding: .6rem 1rem;
-    border-radius: 7px;
+/* ********* FOOTER COMPONENT ************* */
+
+footer p {
+    color: #f8ffe5;
 }
-
-/* ************** DROPDOWN COMPONENT ************* */
-
-.dropdown {
-    right: 0;
-    width: 75%;
-}
-
 
 /* ******* LOADING COMPONENTS ********** */
+
 .spinner-container {
     height: 25rem;
 }
@@ -256,8 +236,4 @@ button {
     }
 }
 
-/* ********* FOOTER COMPONENT ************* */
 
-footer p {
-    color: #f8ffe5;
-}
