@@ -11,16 +11,18 @@
 
 header,
 .hero article,
-#cook {
+#cook,
+.info-container {
     background-color: #F9F5F3;
 }
-nav i,
-.hero i,
+header i,
+.left-side i,
+.right-side,
 #recipe i,
 #recipe h2,
 #cook h2,
 .menu-detail h3 {
-    /* color: #f38e82; */
+    color: #f38e82;
 }
 #recipe {
     background-color: #F2EFEE
@@ -31,7 +33,8 @@ button,
 .img-container::before,
 .recipe-title span,
 .right-side,
-.spinner-container {
+.spinner-container,
+.btn {
     background-image: linear-gradient(to right bottom,#fbdb89,#f48982);
 }
 
@@ -59,20 +62,15 @@ form input.show {
     display: inline-block;
 }
 
-.fa-arrow-right.hide {
-    display: none;
-}
-
 
 /* ********* MENU COMPONENT ********** */
 
 .menu-list, .dropdown {
     background-color: #ffffff;
-    position: fixed;
+    /* position: fixed; */
     top: 4rem;
     z-index: 1;
     transition: .3s;
-    padding-top: 1rem;
     
 }
 .menu-list {
@@ -80,6 +78,7 @@ form input.show {
     left: 0;
     bottom: 0;
     width: 100%;
+    padding: 0 1rem;
 }
 .show-menu {
     transform: translateX(0);
@@ -88,9 +87,6 @@ form input.show {
     transform: translateX(-100%);
 }
 
-.menu-img {
-    width: 20%;
-}
 .menu-img img {
     width: 4rem;
     height: 4rem;
@@ -105,26 +101,29 @@ form input.show {
     font-size: .95rem;
 }
 
+form input {
+    margin-right: -2rem;
+    border-radius: 10rem;
+    outline: none;
+}
 
-.btn-inline {
-    color: #f38e82;
-    font-size: 1.3rem;
+.btn, .btn-inline {
     font-weight: 600;
-    border: none;
-    background-color: #f9f5f3;
-    padding: 0.8rem 1.2rem;
+    font-size: .85rem;
+    padding: 0.3rem 1.1rem;
     border-radius: 10rem;
     cursor: pointer;
     display: flex;
+    justify-content: center;
     align-items: center;
-    transition: all .2s;
+    background-color: #f9f5f3;
 }
 
-.move-page {
-    position: absolute;
-    bottom: 5px;
-    left: 10px;
-    right: 10px;
+.move-page .btn-inline span,
+.move-page .btn-inline i{
+    color: #f38e82;
+    font-size: .8rem;
+    font-weight: 600;
 }
 
 /* ********* HERO COMPONENT ********** */
@@ -184,6 +183,7 @@ form input.show {
     /* color: #ffffff; */
     font-size: .8rem;
 }
+
 /* ********* RECIPELIST COMPONENT ********** */
 
 #recipe li {
@@ -200,7 +200,6 @@ button {
 /* ************** DROPDOWN COMPONENT ************* */
 
 .dropdown {
-    /* transform: translateX(100%); */
     right: 0;
     width: 75%;
 }
@@ -239,20 +238,26 @@ button {
 @keyframes square-anim {
     0% {
         height: 80px;
-        background-color: rgb(111, 163, 240);
+        background-color: rgb(244, 137, 130);
     }
     20% {
         height: 80px;
     }
     40% {
         height: 120px;
-        background-color: rgb(111, 200, 240);
+        background-color: rgb(244, 157, 130);
     }
     80% {
         height: 80px;
     }
     100% {
         height: 80px;
-        background-color: rgb(111, 163, 240);
+        background-color: rgb(244, 137, 130);
     }
+}
+
+/* ********* FOOTER COMPONENT ************* */
+
+footer p {
+    color: #f8ffe5;
 }

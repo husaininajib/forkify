@@ -7,7 +7,7 @@ export default function Hero(props) {
     }
 
     return (
-        <section className="hero img-container">
+        <section className="hero img-container mt-16 ">
                 <img src={props.imageUrl} alt="" />
                 <h1 className="recipe-title"> 
                 <span>{props.title}</span>

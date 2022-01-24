@@ -3,7 +3,7 @@ import React from "react";
 export default function Menu(props) {
     return (
             <div 
-                className="menu-card flex items-center gap-3 py-4 border pl-2"
+                className="menu-card flex items-center gap-3 py-4"
                 onClick={props.handleClickMenu}
             >
                 <figure className="menu-img">
