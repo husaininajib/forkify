@@ -1,4 +1,4 @@
-# A directory that stores over 1,000 recipes
+# Forkify Recipes
 
 ## About
 
